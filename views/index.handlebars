@@ -1,56 +1,62 @@
 <h1>Dat Burger Tho!</h1>
+<div class="row">
+    <!-- Menu -->
+    <div class="col-md-6">
+        <div class="card">
+            <ul>
+                {{#each specials}}
+                <li>
+                    <p>
+                        {{id}}. {{burger_name}}
+                        <button data-burgerid="{{id}}" class="devour">Devour Burger!</button>
+                    </p>
+                </li>
+                {{/each}}
+            </ul>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <ul>
+                        <h2>Create a Plan</h2>
+                        <form id="createburger" class="button-size">
+                            <textarea type="text" name="burger"></textarea>
+                            <button type="submit">Save Burger!</button>
+                        </form>
+                    </ul>
+                </div>
+                <script type="text/javascript">
+                    $(".devour").on("click", function (event) {
+                        var id = $(this).data("burgerid");
 
-<ul>
-    {{#each specials}}
-    <li>
-        <p>
-            {{id}}. {{burger_name}}
-            <button data-burgerid="{{id}}" class="devour">Devour Burger!</button>
-        </p>
-    </li>
-    {{/each}}
-</ul>
+                        $.ajax("/burgers/" + id, {
+                            type: "PUT"
+                        }).then(
+                            function () {
+                                console.log("devour id ", id);
+                                location.reload();
+                            }
+                        );
+                    });
 
-<h2>Create a Plan</h2>
-<form id="createburger" class="button-size">
-    <textarea type="text" name="burger"></textarea>
-    <button type="submit">Save Burger!</button>
-</form>
+                    $("#createburger").on("submit", function (event) {
+                      
+                        event.preventDefault();
 
-<script type="text/javascript">
-    $(".devour").on("click", function (event) {
-        var id = $(this).data("burgerid");
+                        
+                        var newBurger = {
+                            burger_name: $("#createburger [name = burger]").val().trim()
+                        };
 
-        $.ajax("/burgers/" + id, {
-            type: "PUT"
-        }).then(
-            function () {
-                console.log("devour id ", id);
-                // Reload the page to get the updated list
-                location.reload();
-            }
-        );
-    });
-
-    $("#createburger").on("submit", function (event) {
-        // Make sure to preventDefault on a submit event.
-        event.preventDefault();
-
-        // [name=plan] will find an element with a "name" attribute equal to the string "plan"
-        var newBurger = {
-            burger_name: $("#createburger [name = burger]").val().trim()
-        };
-
-        // Send the POST request.
-        $.ajax("/burgers", {
-            type: "POST",
-            data: newBurger
-        }).then(
-            function () {
-                console.log("created new burgerName");
-                // Reload the page to get the updated list
-                location.reload();
-            }
-        );
-    });
-</script>
+                
+                        $.ajax("/burgers", {
+                            type: "POST",
+                            data: newBurger
+                        }).then(
+                            function () {
+                                console.log("created new burgerName");
+                                location.reload();
+                            }
+                        );
+                    });
+                </script>

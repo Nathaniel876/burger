@@ -4,7 +4,6 @@ var app = express();
 
 var PORT = process.env.PORT || 8080;
 
-// Sets up the Express app to handle data parsing
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -32,9 +31,8 @@ connection.connect(function (err) {
     console.log("connected as id " + connection.threadId);
 });
 
-// Start our server so that it can begin listening to client requests.
 app.listen(PORT, function () {
-    // Log (server-side) when our server has started
+
     console.log("Server listening on: http://localhost:" + PORT);
 });
 
@@ -55,19 +53,17 @@ app.get("/", function (req, res) {
     });
 });
 
-// Create a new todo
 app.post("/burgers", function (req, res) {
     connection.query("INSERT INTO burgers (burger_name)VALUES (?)", [req.body.burger_name], function (err, result) {
         if (err) {
             return res.status(500).end();
         }
-    // Send back the ID of the new todo
+  
         res.json({ id: result.id });
         console.log({ id: result.id });
     });
 });
 
-// Update a todo
 app.put("/burgers/:id", function(req, res) {
     connection.query("UPDATE burgers SET devoured = 1 WHERE id = ?", [req.params.id], function(err, result) {
       if (err) {
@@ -83,8 +79,6 @@ app.put("/burgers/:id", function(req, res) {
     });
   });
 
-
-// Post route -> back to home
 app.post("/", function (req, res) {
     connection.query("INSERT INTO burgers (burger_name) VALUES (?)", [req.body.burgerName], function (err, result) {
         if (err) throw err;
